@@ -5,8 +5,34 @@ import dj_database_url
 DEBUG = False
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
-# Database
-DATABASES = {"default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))}
+# Database configuration
+database_url = os.environ.get("DATABASE_PUBLIC_URL") or os.environ.get("DATABASE_URL")
+
+# If we have explicit Postgres settings, use those instead
+if all(
+    [
+        os.environ.get("PGUSER"),
+        os.environ.get("PGPASSWORD"),
+        os.environ.get("PGHOST"),
+        os.environ.get("PGPORT"),
+        os.environ.get("PGDATABASE"),
+    ]
+):
+    database_url = "postgresql://{}:{}@{}:{}/{}".format(
+        os.environ.get("PGUSER"),
+        os.environ.get("PGPASSWORD"),
+        os.environ.get("PGHOST"),
+        os.environ.get("PGPORT"),
+        os.environ.get("PGDATABASE"),
+    )
+
+DATABASES = {
+    "default": dj_database_url.config(
+        default=database_url,
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
 # Security settings
 SECURE_SSL_REDIRECT = True
