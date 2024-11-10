@@ -12,7 +12,22 @@ logger = logging.getLogger(__name__)
 
 
 class CategoryViewSet(BaseViewSet):
-    """ViewSet for Category model providing list and retrieve operations."""
+    """
+    API endpoint for managing blog categories.
+
+    Provides read-only access to blog categories with search capabilities.
+    Includes post count for each category.
+
+    list:
+        Return a paginated list of all categories.
+
+    retrieve:
+        Return the details of a specific category by slug.
+
+    search:
+        Filter categories by title or description using the search parameter.
+        Example: ?search=python
+    """
 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -26,7 +41,22 @@ class CategoryViewSet(BaseViewSet):
 
 
 class TagViewSet(BaseViewSet):
-    """ViewSet for Tag model providing list and retrieve operations."""
+    """
+    API endpoint for managing blog tags.
+
+    Provides read-only access to blog tags with search capabilities.
+    Includes post count for each tag.
+
+    list:
+        Return a paginated list of all tags.
+
+    retrieve:
+        Return the details of a specific tag by slug.
+
+    search:
+        Filter tags by title using the search parameter.
+        Example: ?search=django
+    """
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
@@ -40,7 +70,47 @@ class TagViewSet(BaseViewSet):
 
 
 class PostViewSet(BaseViewSet):
-    """ViewSet for Post model providing full CRUD operations."""
+    """
+    API endpoint for managing blog posts.
+
+    Provides full CRUD operations for authenticated staff users and read-only access for others.
+    Includes filtering, searching, and ordering capabilities.
+
+    list:
+        Return a paginated list of published posts (all posts for staff users).
+
+    retrieve:
+        Return the details of a specific post by slug.
+
+    create:
+        Create a new blog post (staff only).
+        Handles automatic image optimization for featured images.
+
+    update:
+        Update an existing blog post (staff only).
+        Handles automatic image optimization for featured images.
+
+    partial_update:
+        Partially update a blog post (staff only).
+
+    delete:
+        Delete a blog post (staff only).
+
+    filters:
+        - category__slug: Filter by category slug
+        - tags__slug: Filter by tag slug
+        - status: Filter by post status (published/draft)
+        - is_featured: Filter featured posts
+        Example: ?category__slug=python&is_featured=true
+
+    search:
+        Search in title, content, and excerpt
+        Example: ?search=django
+
+    ordering:
+        Order by created_at, published_date, or title
+        Example: ?ordering=-published_date
+    """
 
     serializer_class = PostSerializer
     lookup_field = "slug"
