@@ -43,3 +43,15 @@ class BaseViewSet(viewsets.ModelViewSet):
         return self.error_response(
             message=str(exc), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+# apps/core/views.py
+from django.shortcuts import render
+
+
+def custom_404(request, exception):
+    return render(request, "errors/404.html", status=404)
+
+
+def custom_500(request):
+    return render(request, "errors/500.html", status=500)

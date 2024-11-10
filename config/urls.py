@@ -9,6 +9,15 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from django.contrib.sitemaps.views import sitemap
+from apps.core.sitemaps import BlogSitemap, PortfolioSitemap, StaticSitemap
+from django.views.generic import TemplateView
+
+sitemaps = {
+    "blog": BlogSitemap,
+    "portfolio": PortfolioSitemap,
+    "static": StaticSitemap,
+}
 
 
 @api_view(["GET"])
@@ -43,7 +52,17 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
+    path("", TemplateView.as_view(template_name="index.html"), name="home"),
 ]
+
+handler404 = "apps.core.views.custom_404"
+handler500 = "apps.core.views.custom_500"
 
 # Add static and media URL patterns
 if settings.DEBUG:
