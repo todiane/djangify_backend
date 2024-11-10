@@ -1,39 +1,45 @@
-# Dockerfile
+# Use Python 3.11 slim image
 FROM python:3.11.10-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV POETRY_VERSION=1.7.1
-
-# Set work directory
+# Set working directory
 WORKDIR /app
 
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+  PYTHONUNBUFFERED=1 \
+  POETRY_VERSION=1.7.1 \
+  POETRY_HOME="/opt/poetry" \
+  POETRY_VIRTUALENVS_CREATE=false \
+  POETRY_NO_INTERACTION=1
+
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
   build-essential \
   curl \
-  libpq-dev \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
 # Add Poetry to PATH
-ENV PATH="${PATH}:/root/.local/bin"
+ENV PATH="${POETRY_HOME}/bin:$PATH"
 
-# Copy poetry files
-COPY pyproject.toml poetry.lock* ./
+# Copy dependency files
+COPY pyproject.toml poetry.lock ./
 
-# Install dependencies
+# Configure Poetry and install dependencies
 RUN poetry config virtualenvs.create false \
-  && poetry install --no-interaction --no-ansi
+  && poetry install --no-dev --no-root
 
 # Copy project files
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Install project
+RUN poetry install --no-dev
 
-# Run gunicorn
-CMD ["gunicorn", "djangify_backend.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Set Python path to include the project directory
+ENV PYTHONPATH="/app:${PYTHONPATH}"
+
+# Collect static files
+CMD ["python", "manage.py", "collectstatic", "--noinput"]

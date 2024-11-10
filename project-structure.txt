@@ -1,0 +1,21 @@
+.
+├── Dockerfile
+├── apps
+│   ├── blog
+│   ├── core
+│   ├── media
+│   └── portfolio
+├── config
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings
+│   ├── urls.py
+│   └── wsgi.py
+├── docker-compose.yml
+├── manage.py
+├── poetry.lock
+├── project-structure.txt
+├── pyproject.toml
+└── runtime.txt
+
+7 directories, 11 files

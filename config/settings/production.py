@@ -3,7 +3,7 @@ from .base import *
 import dj_database_url
 
 DEBUG = False
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOSTS", "").split(",")]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
 # Database
 DATABASES = {"default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))}
@@ -18,5 +18,8 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # CORS settings for production
 CORS_ALLOWED_ORIGINS = [
-    os.environ.get("FRONTEND_URL", "https://your-frontend-domain.com"),
+    os.environ.get("FRONTEND_URL", "https://djangify_frontend.railway.app"),
+    "https://djangify.com",  # Your future production frontend
+    "https://www.djangify.com",
+    "http://localhost:3000",  # For Next.js local development
 ]

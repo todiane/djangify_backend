@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "django_filters",
     "django_summernote",
     "whitenoise.runserver_nostatic",
+    "dj_database_url",
     # Local apps
     "apps.blog",
     "apps.core",
@@ -40,7 +41,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "djangify_backend.urls"
+ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
@@ -58,7 +59,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "djangify_backend.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
