@@ -96,6 +96,13 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# Image optimization settings
+BLOG_IMAGE_SIZE = (800, 800)
+BLOG_IMAGE_QUALITY = 85
+PORTFOLIO_IMAGE_SIZE = (1200, 800)
+PORTFOLIO_GALLERY_IMAGE_SIZE = (1200, 800)
+PORTFOLIO_IMAGE_QUALITY = 85
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # REST Framework settings

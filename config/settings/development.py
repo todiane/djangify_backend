@@ -4,6 +4,9 @@ from .base import *
 DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
+# Frontend URL for development
+FRONTEND_URL = "http://localhost:3000"  # Default development frontend URL
+
 # Database configuration with fallbacks
 DATABASES = {
     "default": {

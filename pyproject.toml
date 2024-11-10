@@ -17,6 +17,7 @@ psycopg2-binary = "^2.9.10"
 python-dotenv = "^1.0.1"
 gunicorn = "^21.2.0"
 dj-database-url = "^2.1.0"
+pillow = "^11.0.0"
 
 [build-system]
 requires = ["poetry-core"]

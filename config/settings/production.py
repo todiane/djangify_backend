@@ -53,3 +53,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.djangify.com",
     "http://localhost:3000",
 ]
+
+# Frontend URL configuration
+# Uncomment and update once frontend is deployed
+# FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://your-frontend-domain.railway.app')
