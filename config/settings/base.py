@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django_summernote",
     "whitenoise.runserver_nostatic",
     "dj_database_url",
+    "drf_spectacular",
     # Local apps
     "apps.blog",
     "apps.core",
@@ -105,7 +106,7 @@ PORTFOLIO_IMAGE_QUALITY = 85
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# REST Framework settings
+# Update REST_FRAMEWORK settings in base.py
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
@@ -113,9 +114,31 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
+    # Add these new settings
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.CursorPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/hour",  # Limit anonymous users to 100 requests per hour
+        "user": "1000/hour",  # Limit authenticated users to 1000 requests per hour
+    },
 }
 
 # Summernote settings
 SUMMERNOTE_CONFIG = {
     "attachment_filesize_limit": 5 * 1024 * 1024,  # 5MB
+}
+
+# Spectacular settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Djangify API",
+    "DESCRIPTION": "API documentation for Djangify Portfolio Backend",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_PATH_PREFIX": "/api/v1",
 }
