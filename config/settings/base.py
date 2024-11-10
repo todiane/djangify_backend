@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "dj_database_url",
     "drf_spectacular",
+    "django.contrib.sitemaps",
     # Local apps
     "apps.blog",
     "apps.core",
