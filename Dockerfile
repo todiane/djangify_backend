@@ -36,7 +36,7 @@ RUN poetry config virtualenvs.create false \
 COPY . .
 
 # Install project
-RUN poetry install --no-dev
+RUN poetry install --only main
 
 # Set Python path to include the project directory
 ENV PYTHONPATH="/app:${PYTHONPATH}"
