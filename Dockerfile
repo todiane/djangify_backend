@@ -26,14 +26,11 @@ RUN apt-get update \
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="${POETRY_HOME}/bin:$PATH"
 
-# Copy dependency files
-COPY pyproject.toml poetry.lock ./
+# Copy the entire project first
+COPY . .
 
 # Install dependencies
-RUN poetry install --no-dev --no-root
-
-# Copy project files
-COPY . .
+RUN poetry install --no-dev
 
 # Create necessary directories
 RUN mkdir -p staticfiles media/blog media/portfolio media/summernote \
