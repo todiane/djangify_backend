@@ -1,10 +1,12 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Portfolio Admin{% endblock %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Djangify Backend Admin{% endblock %}
 
 {% block branding %}
-    <h1 id="site-name"><a href="{% url 'admin:index' %}">Djangify Backend Administration</a></h1>
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">Djangify Backend Administration</a>
+</h1>
 {% endblock %}
 
 {% block extrahead %}
