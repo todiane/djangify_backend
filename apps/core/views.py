@@ -6,7 +6,13 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import render
 import logging
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from apps.core.auth import UserSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -60,8 +66,12 @@ class BaseViewSet(viewsets.ModelViewSet):
         return super().handle_exception(exc)
 
 
-# apps/core/views.py
-from django.shortcuts import render
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
 
 
 def custom_404(request, exception):
