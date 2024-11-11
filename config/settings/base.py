@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "dj_database_url",
     "drf_spectacular",
     "django.contrib.sitemaps",
+    "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     # Local apps
     "apps.blog",
@@ -133,6 +134,9 @@ REST_FRAMEWORK = {
         "anon": "100/hour",  # Limit anonymous users to 100 requests per hour
         "user": "1000/hour",  # Limit authenticated users to 1000 requests per hour
     },
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
 }
 
 SIMPLE_JWT = {
@@ -140,18 +144,21 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
-    "UPDATE_LAST_LOGIN": True,
+    "UPDATE_LAST_LOGIN": False,
     "ALGORITHM": "HS256",
+    "SIGNING_KEY": os.environ.get("DJANGO_SECRET_KEY"),
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
     "JTI_CLAIM": "jti",
-    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=15),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
 # Summernote settings
