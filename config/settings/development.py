@@ -21,3 +21,7 @@ DATABASES = {
 
 # CORS settings for development
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+LOGGING["loggers"]["django"]["level"] = "DEBUG"
+LOGGING["loggers"]["apps"]["level"] = "DEBUG"

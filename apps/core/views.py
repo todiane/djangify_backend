@@ -44,6 +44,21 @@ class BaseViewSet(viewsets.ModelViewSet):
             message=str(exc), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
+    def handle_exception(self, exc):
+        """Enhanced exception handler with detailed logging"""
+        logger = logging.getLogger("api")
+
+        # Log the exception with request details
+        logger.error(
+            f"Error in {self.__class__.__name__} | "
+            f"Method: {self.request.method} | "
+            f"Path: {self.request.path} | "
+            f"Error: {str(exc)} | "
+            f"User: {self.request.user.username if self.request.user.is_authenticated else 'anonymous'}"
+        )
+
+        return super().handle_exception(exc)
+
 
 # apps/core/views.py
 from django.shortcuts import render

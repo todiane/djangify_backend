@@ -2,6 +2,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from .logging import LOGGING
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -107,6 +108,9 @@ PORTFOLIO_IMAGE_QUALITY = 85
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Make sure you have ADMINS setting for error emails
+ADMINS = [("Diane", "djangify@gmail.com")]  # U
+
 # Update REST_FRAMEWORK settings in base.py
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -143,3 +147,9 @@ SPECTACULAR_SETTINGS = {
     "COMPONENT_SPLIT_REQUEST": True,
     "SCHEMA_PATH_PREFIX": "/api/v1",
 }
+
+SLOW_QUERY_THRESHOLD = 1.0  # seconds
+MIDDLEWARE += [
+    "apps.core.middleware.PerformanceMonitoringMiddleware",
+    "apps.core.middleware.APIMonitoringMiddleware",
+]

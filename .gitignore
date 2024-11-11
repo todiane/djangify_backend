@@ -42,3 +42,6 @@ poetry.lock
 
 # Static files
 staticfiles/
+logs/*
+!logs/.gitkeep
+.gitkeep

@@ -1,12 +1,7 @@
 # config/settings/production.py
 from .base import *
 import dj_database_url
-import logging
 
-# Setup logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger("django.db.backends")
-logger.setLevel(logging.DEBUG)
 
 DEBUG = False
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
