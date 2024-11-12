@@ -47,7 +47,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # CORS settings for production (existing settings remain the same)
 CORS_ALLOWED_ORIGINS = [
-    os.environ.get("FRONTEND_URL", "https://djangify_frontend.railway.app"),
+    os.environ.get("FRONTEND_URL", "https://djangify.railway.app"),
     "https://djangify.com",
     "https://www.djangify.com",
     "http://localhost:3000",
@@ -55,4 +55,4 @@ CORS_ALLOWED_ORIGINS = [
 
 # Frontend URL configuration
 
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://djangify_frontend.railway.app")
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://djangify.railway.app")
