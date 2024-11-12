@@ -34,9 +34,10 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     # Local apps
-    "apps.blog",
-    "apps.core",
-    "apps.portfolio",
+    "apps.core.apps.CoreConfig",
+    "apps.portfolio.apps.PortfolioConfig",
+    "apps.blog.apps.BlogConfig",
+    "apps.authentication.apps.AuthenticationConfig",
 ]
 
 MIDDLEWARE = [

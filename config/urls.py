@@ -35,7 +35,7 @@ def api_root(request):
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("summernote/", include("django_summernote.urls")),
-    path("api/auth/", include("djangify_backend.auth.urls")),
+    path("api/auth/", include("apps.authentication.urls")),
     path("api/", include("apps.core.urls")),
     path("api/v1", api_root, name="api-root"),
     path("api/v1/", api_root, name="api-root"),
