@@ -34,6 +34,7 @@ class CategoryViewSet(BaseViewSet):
     lookup_field = "slug"
     filter_backends = [filters.SearchFilter]
     search_fields = ["title", "description"]
+    ordering = ["created_at"]
     http_method_names = ["get"]  # Read-only operations
 
     def get_queryset(self):
@@ -63,6 +64,7 @@ class TagViewSet(BaseViewSet):
     lookup_field = "slug"
     filter_backends = [filters.SearchFilter]
     search_fields = ["title"]
+    ordering = ["created_at"] 
     http_method_names = ["get"]  # Read-only operations
 
     def get_queryset(self):

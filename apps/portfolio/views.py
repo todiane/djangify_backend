@@ -39,7 +39,8 @@ class TechnologyViewSet(BaseViewSet):
     lookup_field = "slug"
     filter_backends = [filters.SearchFilter]
     search_fields = ["name"]
-    http_method_names = ["get"]  # Read-only operations
+    ordering = ["created_at"]  
+    http_method_names = ["get"]
 
 
 class PortfolioViewSet(BaseViewSet):
@@ -96,7 +97,7 @@ class PortfolioViewSet(BaseViewSet):
     filterset_fields = ["technologies__slug", "is_featured"]
     search_fields = ["title", "description", "short_description"]
     ordering_fields = ["order", "created_at"]
-    ordering = ["order", "-created_at"]
+    ordering = ["order"]
 
     def get_queryset(self):
         return Portfolio.objects.prefetch_related("technologies", "images")

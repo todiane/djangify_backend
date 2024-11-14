@@ -42,7 +42,7 @@ class Technology(TimeStampedModel):
 
     class Meta:
         verbose_name_plural = "Technologies"
-        ordering = ["name"]
+        ordering = ['name', '-created_at']
 
     def __str__(self):
         return self.name
@@ -142,7 +142,7 @@ class PortfolioImage(TimeStampedModel):
             )
 
     class Meta:
-        ordering = ["order"]
+        ordering = ['order', '-created_at']
 
     def __str__(self):
         return f"Image {self.order} for {self.portfolio.title}"

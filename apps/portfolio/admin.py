@@ -30,6 +30,7 @@ class TechnologyAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "icon")
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
+    ordering = ["name", "-created_at"]
 
 
 @admin.register(Portfolio)
@@ -49,6 +50,7 @@ class PortfolioAdmin(SummernoteModelAdmin):
     filter_horizontal = ("technologies",)
     inlines = [PortfolioImageInline]
     list_editable = ("order", "is_featured")
+    ordering = ["order", "-created_at"]
 
     fieldsets = (
         ("Basic Information", {"fields": ("title", "slug", "short_description")}),

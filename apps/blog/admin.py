@@ -14,6 +14,7 @@ class PostAdmin(SummernoteModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     date_hierarchy = "created_at"
     list_editable = ("status", "is_featured")
+    ordering = ["-created_at"]
 
     fieldsets = (
         (

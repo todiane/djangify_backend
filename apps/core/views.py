@@ -11,6 +11,7 @@ import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import filters
 
 from apps.core.auth import UserSerializer
 
@@ -31,7 +32,10 @@ class BaseViewSet(viewsets.ModelViewSet):
     Base ViewSet class with simplified response handling.
     Other ViewSets in the application will inherit from this.
     """
-
+    # Add default ordering configuration
+    ordering = ["-created_at"]
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ["created_at"]
     def success_response(self, data=None, message=None, status_code=status.HTTP_200_OK):
         """Create a standardized success response"""
         response = {"status": "success", "data": data}

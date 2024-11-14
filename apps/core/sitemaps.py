@@ -28,7 +28,7 @@ class PortfolioSitemap(Sitemap):
 
 
 class StaticSitemap(Sitemap):
-    changefreq = "yearly"
+    changefreq = "monthly"
     priority = 1.0
 
     def items(self):

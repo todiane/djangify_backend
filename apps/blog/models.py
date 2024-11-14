@@ -39,7 +39,7 @@ class Category(TimeStampedModel, SluggedModel):
 
     class Meta:
         verbose_name_plural = "Categories"
-        ordering = ["title"]
+        ordering = ['title', '-created_at']
 
     def __str__(self):
         return self.title
@@ -49,7 +49,7 @@ class Tag(TimeStampedModel, SluggedModel):
     """Tag model for labeling blog posts."""
 
     class Meta:
-        ordering = ["title"]
+        ordering = ['title', '-created_at']
 
     def __str__(self):
         return self.title
@@ -109,4 +109,4 @@ class Post(TimeStampedModel, SluggedModel, SEOModel):
         return f"{base_url.rstrip('/')}/blog/{self.slug}"
 
 
-# Create your models here.
+
