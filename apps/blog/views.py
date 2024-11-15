@@ -7,6 +7,8 @@ from apps.blog.models import Post, Category, Tag
 from apps.blog.serializers import PostSerializer, CategorySerializer, TagSerializer
 from apps.core.utils import ImageHandler
 import logging
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +36,8 @@ class CategoryViewSet(BaseViewSet):
     lookup_field = "slug"
     filter_backends = [filters.SearchFilter]
     search_fields = ["title", "description"]
-    ordering = ["created_at"]
+    ordering_fields = ["title", "published_date"]
+    ordering = ["published_date"]
     http_method_names = ["get"]  # Read-only operations
 
     def get_queryset(self):
@@ -64,13 +67,14 @@ class TagViewSet(BaseViewSet):
     lookup_field = "slug"
     filter_backends = [filters.SearchFilter]
     search_fields = ["title"]
-    ordering = ["created_at"] 
+    ordering_fields = ["title", "published_date"]
+    ordering = ["published_date"]
     http_method_names = ["get"]  # Read-only operations
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related("posts")
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class PostViewSet(BaseViewSet):
     """
     API endpoint for managing blog posts.
@@ -160,3 +164,10 @@ class PostViewSet(BaseViewSet):
                 logger.error(
                     f"Error optimizing image for post {instance.title}: {str(e)}"
                 )
+def get_queryset(self):
+    queryset = Post.objects.select_related("category").prefetch_related("tags")
+    logger.debug(f"Post queryset count: {queryset.count()}")
+    if not self.request.user.is_staff:
+        queryset = queryset.filter(status="published")
+        logger.debug(f"Published post count: {queryset.count()}")
+    return queryset

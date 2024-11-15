@@ -16,4 +16,5 @@ urlpatterns = [
     path("auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("auth/token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"),
     path("auth/user/", UserDetailView.as_view(), name="user_detail"),
+
 ]

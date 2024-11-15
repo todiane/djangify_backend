@@ -33,9 +33,7 @@ class BaseViewSet(viewsets.ModelViewSet):
     Other ViewSets in the application will inherit from this.
     """
     # Add default ordering configuration
-    ordering = ["-created_at"]
     filter_backends = [filters.OrderingFilter]
-    ordering_fields = ["created_at"]
     def success_response(self, data=None, message=None, status_code=status.HTTP_200_OK):
         """Create a standardized success response"""
         response = {"status": "success", "data": data}

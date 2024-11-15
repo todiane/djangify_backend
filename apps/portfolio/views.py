@@ -13,10 +13,11 @@ from apps.portfolio.serializers import (
 )
 from apps.core.utils import ImageHandler
 import logging
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 logger = logging.getLogger(__name__)
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class TechnologyViewSet(BaseViewSet):
     """
     API endpoint for managing technology/skill entries.
@@ -39,10 +40,11 @@ class TechnologyViewSet(BaseViewSet):
     lookup_field = "slug"
     filter_backends = [filters.SearchFilter]
     search_fields = ["name"]
-    ordering = ["created_at"]  
+    ordering_fields = ["name", "created_at"]
+    ordering = ["name", "-created_at"]
     http_method_names = ["get"]
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class PortfolioViewSet(BaseViewSet):
     """
     API endpoint for managing portfolio projects.
@@ -177,8 +179,8 @@ class PortfolioImageViewSet(BaseViewSet):
 
     queryset = PortfolioImage.objects.all()
     serializer_class = PortfolioImageSerializer
-    ordering_fields = ["order"]
-    ordering = ["order"]
+    ordering_fields = ["order", "created_at"]
+    ordering = ["order", "-created_at"]
 
     def perform_create(self, serializer):
         """Handle image optimization during image creation."""
@@ -201,3 +203,8 @@ class PortfolioImageViewSet(BaseViewSet):
                 )
             except Exception as e:
                 logger.error(f"Error optimizing portfolio image: {str(e)}")
+
+def get_queryset(self):
+    queryset = Portfolio.objects.prefetch_related("technologies", "images")
+    logger.debug(f"Portfolio queryset count: {queryset.count()}")
+    return queryset
