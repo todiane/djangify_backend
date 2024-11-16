@@ -1,0 +1,11 @@
+[build]
+# Use Poetry to install dependencies without creating a separate virtual environment
+command = "poetry config virtualenvs.create false && poetry install"
+
+[start]
+# Use Poetry to run the Django application with Gunicorn
+command = "poetry run gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
+
+# Load environment variables from the .env file
+[env]
+file = ".env"
