@@ -2,9 +2,9 @@
 from .base import *
 import dj_database_url
 
-
 DEBUG = False
 
+# Ensure ALLOWED_HOSTS is correctly set
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") + [
     ".railway.app",  # Allows all railway.app subdomains
     os.environ.get("RAILWAY_STATIC_URL", ""),
@@ -37,22 +37,19 @@ if database_url:
 else:
     raise Exception("DATABASE_URL environment variable is not set!")
 
-# Security settings (existing settings remain the same)
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# Security settings
+SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")  # Ensure proxy sets this header
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# CORS settings for production (existing settings remain the same)
+# CORS settings for production
 CORS_ALLOWED_ORIGINS = [
     os.environ.get("FRONTEND_URL", "https://djangify.railway.app"),
-    "https://djangify.com",
-    "https://www.djangify.com",
     "http://localhost:3000",
 ] + [f"https://{host}" for host in ALLOWED_HOSTS if host]
 
 # Frontend URL configuration
-
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://djangify.railway.app")

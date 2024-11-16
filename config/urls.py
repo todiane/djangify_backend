@@ -38,7 +38,6 @@ urlpatterns = [
     path("api/auth/", include("apps.authentication.urls")),
     path("api/", include("apps.core.urls")),
     path("api/v1", api_root, name="api-root"),
-    path("api/v1/", api_root, name="api-root"),
     path("api/v1/blog/", include("apps.blog.urls")),
     path("api/v1/portfolio/", include("apps.portfolio.urls")),
     # API Documentation URLs

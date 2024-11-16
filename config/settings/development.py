@@ -4,6 +4,14 @@ from .base import *
 DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
+# Ensure SSL redirect is disabled in development
+SECURE_SSL_REDIRECT = False
+
+# Ensure session cookies are not marked as secure in development
+SESSION_COOKIE_SECURE = False
+
+
+
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
