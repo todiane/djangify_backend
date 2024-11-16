@@ -1,0 +1,26 @@
+                          List of relations
+ Schema |               Name               | Type  |      Owner      
+--------+----------------------------------+-------+-----------------
+ public | auth_group                       | table | djangifybe_user
+ public | auth_group_permissions           | table | djangifybe_user
+ public | auth_permission                  | table | djangifybe_user
+ public | auth_user                        | table | djangifybe_user
+ public | auth_user_groups                 | table | djangifybe_user
+ public | auth_user_user_permissions       | table | djangifybe_user
+ public | blog_category                    | table | djangifybe_user
+ public | blog_post                        | table | djangifybe_user
+ public | blog_post_tags                   | table | djangifybe_user
+ public | blog_tag                         | table | djangifybe_user
+ public | django_admin_log                 | table | djangifybe_user
+ public | django_content_type              | table | djangifybe_user
+ public | django_migrations                | table | djangifybe_user
+ public | django_session                   | table | djangifybe_user
+ public | django_summernote_attachment     | table | djangifybe_user
+ public | portfolio_portfolio              | table | djangifybe_user
+ public | portfolio_portfolio_technologies | table | djangifybe_user
+ public | portfolio_portfolioimage         | table | djangifybe_user
+ public | portfolio_technology             | table | djangifybe_user
+ public | token_blacklist_blacklistedtoken | table | djangifybe_user
+ public | token_blacklist_outstandingtoken | table | djangifybe_user
+(21 rows)
+
