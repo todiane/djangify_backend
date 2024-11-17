@@ -1,6 +1,6 @@
 # config/settings/production.py
 from .base import *
-import dj_database_url
+
 
 DEBUG = False
 
@@ -9,13 +9,19 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") + [
     os.environ.get("RAILWAY_STATIC_URL", ""),
 ]
 
-# Direct database configuration
-database_url = os.environ.get("DATABASE_PUBLIC_URL")
-if database_url and database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql://", 1)
-
 DATABASES = {
-    "default": dj_database_url.parse(database_url)
+    "default": dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+        ssl_require=True,
+        OPTIONS={
+            "sslmode": "require",
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        }
+    )
 }
 
 # Basic security settings

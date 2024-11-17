@@ -1,4 +1,5 @@
 # config/settings/development.py
+import dj_database_url
 from .base import *
 
 DEBUG = True
@@ -24,18 +25,28 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 # Frontend URL for development
 FRONTEND_URL = "http://localhost:3000"  # Default development frontend URL
 
-# Database configuration with fallbacks
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DATABASE_NAME", "djangify_backend"),
-        "USER": os.environ.get("DATABASE_USER", "djangifybe_user"),
-        "PASSWORD": os.environ.get("DATABASE_PASSWORD", ""),
-        "HOST": os.environ.get("DATABASE_HOST", "localhost"),
-        "PORT": os.environ.get("DATABASE_PORT", "5432"),
-    }
-}
+# Determine if PostgreSQL should be used locally
+POSTGRES_LOCALLY = False  # Set to True to deploy to Railway or False tuse locally
 
+# Database configuration
+if os.environ.get('ENVIRONMENT') == 'production' or POSTGRES_LOCALLY:
+    # Ensure the DATABASE_URL environment variable is set
+    DATABASES = {
+        'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("DATABASE_NAME", "djangify_backend"),
+            "USER": os.environ.get("DATABASE_USER", "djangifybe_user"),
+            "PASSWORD": os.environ.get("DATABASE_PASSWORD", ""),
+            "HOST": os.environ.get("DATABASE_HOST", "localhost"),
+            "PORT": os.environ.get("DATABASE_PORT", "5432"),
+        }
+    }
+
+    
 # CORS settings for development
 CORS_ALLOW_ALL_ORIGINS = True
 

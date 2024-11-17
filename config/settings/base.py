@@ -1,6 +1,7 @@
 # config/settings/base.py
 from pathlib import Path
 import os
+import dj_database_url
 from dotenv import load_dotenv
 from .logging import LOGGING
 from datetime import timedelta
@@ -10,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Load environment variables from .env file
 load_dotenv()
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "your-default-secret-key-for-dev")
@@ -53,6 +55,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
+
 
 TEMPLATES = [
     {

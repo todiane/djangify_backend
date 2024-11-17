@@ -1,2 +1,1 @@
-web: python manage.py migrate && gunicorn djangify_backend.wsgi
-release: python manage.py migrate
+web: gunicorn config.wsgi:application --log-file -

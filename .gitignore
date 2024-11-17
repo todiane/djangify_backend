@@ -45,3 +45,11 @@ staticfiles/
 logs/*
 !logs/.gitkeep
 .gitkeep
+
+node_modules/
+
+
+# VSCode
+.vscode/
+# Static files
+staticfiles/
