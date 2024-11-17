@@ -1,9 +1,11 @@
+# Build version: 1  # Increment this to force a fresh build
 [tool.poetry]
 name = "djangify-backend"
 version = "0.1.0"
 description = "Django Portfolio Backend"
 authors = ["Diane Corriette"]
 readme = "README.md"
+packages = [{include = "config"}, {include = "apps"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -20,7 +22,12 @@ dj-database-url = "^2.1.0"
 pillow = "^11.0.0"
 drf-spectacular = "^0.27.2"
 djangorestframework-simplejwt = "^5.3.1"
+python-decouple = "^3.8"
 
 [build-system]
-requires = ["poetry-core"]
+requires = [
+    "poetry-core>=1.0.0",
+    "setuptools>=45",
+    "wheel"
+]
 build-backend = "poetry.core.masonry.api"

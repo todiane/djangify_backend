@@ -1,10 +1,11 @@
 # config/settings/base.py
 from pathlib import Path
 import os
-import dj_database_url
 from dotenv import load_dotenv
 from .logging import LOGGING
 from datetime import timedelta
+from urllib.parse import urlparse
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -13,8 +14,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv()
 
 
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "your-default-secret-key-for-dev")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # Application definition
 INSTALLED_APPS = [
@@ -55,7 +58,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
-
 
 TEMPLATES = [
     {
@@ -190,3 +192,37 @@ MIDDLEWARE += [
     "apps.core.middleware.PerformanceMonitoringMiddleware",
     "apps.core.middleware.APIMonitoringMiddleware",
 ]
+
+# Read the USE_PRODUCTION_DB variable
+USE_PRODUCTION_DB = config('USE_PRODUCTION_DB', default='false').lower() == 'true'
+
+if USE_PRODUCTION_DB:
+    DATABASE_URL = config('DATABASE_URL')
+else:
+    DATABASE_URL = config('DEV_DATABASE_URL')
+
+# Parse the database URL
+url = urlparse(DATABASE_URL)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': url.path[1:],  # Remove leading '/'
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': url.port,
+    }
+}
+
+# Add database options for Railway if using production database
+if USE_PRODUCTION_DB:
+    DATABASES['default'].update({
+        'OPTIONS': {
+            "sslmode": "require",
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        }
+    })

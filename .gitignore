@@ -33,9 +33,8 @@ media/
 .env.development
 .env.test
 .env.production
+.env.backup
 
-# Poetry
-poetry.lock
 
 # VSCode
 .vscode/

@@ -1,28 +1,15 @@
 # config/settings/production.py
 from .base import *
-
+import dj_database_url
 
 DEBUG = False
+
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") + [
     ".railway.app",
     os.environ.get("RAILWAY_STATIC_URL", ""),
 ]
 
-DATABASES = {
-    "default": dj_database_url.config(
-        conn_max_age=600,
-        conn_health_checks=True,
-        ssl_require=True,
-        OPTIONS={
-            "sslmode": "require",
-            "keepalives": 1,
-            "keepalives_idle": 30,
-            "keepalives_interval": 10,
-            "keepalives_count": 5,
-        }
-    )
-}
 
 # Basic security settings
 SECURE_SSL_REDIRECT = True
