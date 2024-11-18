@@ -19,24 +19,14 @@ CSRF_COOKIE_SECURE = True
 
 # CORS settings for production
 CORS_ALLOWED_ORIGINS = [
-    os.environ.get("FRONTEND_URL", "https://djangify.railway.app"),
+    os.environ.get("FRONTEND_URL"),
+    "https://djangify.up.railway.app",
     "http://localhost:3000",
-] + [f"https://{host}" for host in ALLOWED_HOSTS if host]
+    "https://djangify.com"
+]
 
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://djangify.railway.app")
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://djangify.railway.app,https://djangify.com")
 
-
-# Storage configuration
-
-# Storage configuration
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    }
-}
 
 # WhiteNoise settings
 WHITENOISE_USE_FINDERS = True

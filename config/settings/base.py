@@ -15,6 +15,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Load environment variables from .env file
 load_dotenv()
 
+APPEND_SLASH = True
+
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
@@ -217,11 +219,23 @@ MIDDLEWARE += [
 # Parse the database URL
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
+        default=config('DATABASE_URL', default=config('DEV_DATABASE_URL')),
         conn_max_age=600,
         conn_health_checks=True,
-        ssl_require=True if config('USE_PRODUCTION_DB', default='false').lower() == 'true' else False
+        ssl_require=config('USE_PRODUCTION_DB', default='false').lower() == 'true'
     )
 }
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+if config('USE_PRODUCTION_DB', default='false').lower() == 'true':
+    STORAGES["staticfiles"]["BACKEND"] = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
