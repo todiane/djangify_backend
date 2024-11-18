@@ -24,3 +24,22 @@ CORS_ALLOWED_ORIGINS = [
 ] + [f"https://{host}" for host in ALLOWED_HOSTS if host]
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://djangify.railway.app")
+
+
+# Storage configuration
+
+# Storage configuration
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    }
+}
+
+# WhiteNoise settings
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_ALLOW_ALL_ORIGINS = True
+

@@ -1,10 +1,12 @@
 # config/settings/base.py
 from pathlib import Path
 import os
+import dj_database_url
 from dotenv import load_dotenv
 from .logging import LOGGING
 from datetime import timedelta
-from urllib.parse import urlparse
+
+
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -99,14 +101,32 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Base storage configuration
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    }
+}
+
+# Create a static directory if you plan to add custom static files
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 
 # Image optimization settings
 BLOG_IMAGE_SIZE = (800, 800)
@@ -193,36 +213,15 @@ MIDDLEWARE += [
     "apps.core.middleware.APIMonitoringMiddleware",
 ]
 
-# Read the USE_PRODUCTION_DB variable
-USE_PRODUCTION_DB = config('USE_PRODUCTION_DB', default='false').lower() == 'true'
-
-if USE_PRODUCTION_DB:
-    DATABASE_URL = config('DATABASE_URL')
-else:
-    DATABASE_URL = config('DEV_DATABASE_URL')
 
 # Parse the database URL
-url = urlparse(DATABASE_URL)
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': url.path[1:],  # Remove leading '/'
-        'USER': url.username,
-        'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+        ssl_require=True if config('USE_PRODUCTION_DB', default='false').lower() == 'true' else False
+    )
 }
 
-# Add database options for Railway if using production database
-if USE_PRODUCTION_DB:
-    DATABASES['default'].update({
-        'OPTIONS': {
-            "sslmode": "require",
-            "keepalives": 1,
-            "keepalives_idle": 30,
-            "keepalives_interval": 10,
-            "keepalives_count": 5,
-        }
-    })
+

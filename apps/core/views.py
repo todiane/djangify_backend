@@ -77,8 +77,9 @@ class UserDetailView(APIView):
 
 
 def custom_404(request, exception):
-    return render(request, "errors/404.html", status=404)
-
+    logger.error(f"404 error: {exception}")
+    return render(request, 'errors/404.html', status=404)
 
 def custom_500(request):
-    return render(request, "errors/500.html", status=500)
+    logger.error("500 error", exc_info=True)
+    return render(request, 'errors/500.html', status=500)

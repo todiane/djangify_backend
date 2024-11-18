@@ -10,7 +10,8 @@ SECURE_SSL_REDIRECT = False
 # Ensure session cookies are not marked as secure in development
 SESSION_COOKIE_SECURE = False
 
-
+# Development-specific static files settings
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
