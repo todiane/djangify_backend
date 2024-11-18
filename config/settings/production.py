@@ -5,9 +5,12 @@ import dj_database_url
 DEBUG = False
 
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") + [
-    ".railway.app",
-    os.environ.get("RAILWAY_STATIC_URL", ""),
+ALLOWED_HOSTS = [
+    "djangify.up.railway.app",
+    "djangify.railway.app",
+    "*railway.app",
+    "djangify.com",
+    "djangifybackend.railway.app"
 ]
 
 
@@ -22,7 +25,8 @@ CORS_ALLOWED_ORIGINS = [
     os.environ.get("FRONTEND_URL"),
     "https://djangify.up.railway.app",
     "http://localhost:3000",
-    "https://djangify.com"
+    "https://djangify.com",
+    "https://djangifybackend.up.railway.app"
 ]
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://djangify.railway.app,https://djangify.com")
