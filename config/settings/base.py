@@ -1,7 +1,6 @@
 # config/settings/base.py
 from pathlib import Path
 import os
-import dj_database_url
 from dotenv import load_dotenv
 from .logging import LOGGING
 from datetime import timedelta
@@ -17,6 +16,7 @@ load_dotenv()
 
 APPEND_SLASH = True
 
+DATABASES = {}  # Empty dict since DB settings are in environment-specific files
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     # Local apps
     "apps.core.apps.CoreConfig",
     "apps.portfolio.apps.PortfolioConfig",
-    "apps.blog.apps.BlogConfig",
     "apps.authentication.apps.AuthenticationConfig",
 ]
 
@@ -131,8 +130,6 @@ STATICFILES_DIRS = [
 
 
 # Image optimization settings
-BLOG_IMAGE_SIZE = (800, 800)
-BLOG_IMAGE_QUALITY = 85
 PORTFOLIO_IMAGE_SIZE = (1200, 800)
 PORTFOLIO_GALLERY_IMAGE_SIZE = (1200, 800)
 PORTFOLIO_IMAGE_QUALITY = 85
@@ -152,7 +149,6 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
-    # Add these new settings
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
@@ -214,17 +210,6 @@ MIDDLEWARE += [
     "apps.core.middleware.PerformanceMonitoringMiddleware",
     "apps.core.middleware.APIMonitoringMiddleware",
 ]
-
-
-# Parse the database URL
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL', default=config('DEV_DATABASE_URL')),
-        conn_max_age=600,
-        conn_health_checks=True,
-        ssl_require=config('USE_PRODUCTION_DB', default='false').lower() == 'true'
-    )
-}
 
 STORAGES = {
     "default": {

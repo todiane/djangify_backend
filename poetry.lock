@@ -480,6 +480,16 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "python-environ"
+version = "0.4.54"
+description = "Django-environ allows you to utilize 12factor inspired environment variables to configure your Django application."
+optional = false
+python-versions = "*"
+files = [
+    {file = "python-environ-0.4.54.tar.gz", hash = "sha256:6249a14057f95aba3b4906d73276f770e01e659f8098b3f3b34295feac42865b"},
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 description = "YAML parser and emitter for Python"
@@ -731,4 +741,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e7b258232d6ed008cdc1f7631bbbabd8835e9a9783b829554748b977b142d5fd"
+content-hash = "54d5ac0f79f002510d56c0fa0be9ba6db850f7c6e7f58d11935d0f1e0457cc48"

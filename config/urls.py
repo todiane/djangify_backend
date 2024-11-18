@@ -10,11 +10,10 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 from django.contrib.sitemaps.views import sitemap
-from apps.core.sitemaps import BlogSitemap, PortfolioSitemap, StaticSitemap
+from apps.core.sitemaps import PortfolioSitemap, StaticSitemap
 from django.views.generic import TemplateView
 
 sitemaps = {
-    "blog": BlogSitemap,
     "portfolio": PortfolioSitemap,
     "static": StaticSitemap,
 }
@@ -24,7 +23,6 @@ sitemaps = {
 def api_root(request):
     return Response(
         {
-            "blog": request.build_absolute_uri("/api/v1/blog/"),
             "portfolio": request.build_absolute_uri("/api/v1/portfolio/"),
             "schema": request.build_absolute_uri("/api/schema/"),
             "docs": request.build_absolute_uri("/api/docs/"),
@@ -38,7 +36,6 @@ urlpatterns = [
     path("api/auth/", include("apps.authentication.urls")),
     path("api/", include("apps.core.urls")),
     path("api/v1/", api_root, name="api-root"),
-    path("api/v1/blog/", include("apps.blog.urls")),
     path("api/v1/portfolio/", include("apps.portfolio.urls")),
     # API Documentation URLs
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

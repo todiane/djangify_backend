@@ -1,8 +1,16 @@
 # config/settings/development.py
-import dj_database_url
+import environ
 from .base import *
 
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+DEBUG = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+DATABASES = {
+    'default': env.db('DEV_DATABASE_URL')
+}
 
 # Ensure SSL redirect is disabled in development
 SECURE_SSL_REDIRECT = False
