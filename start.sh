@@ -21,6 +21,15 @@ python manage.py collectstatic --noinput
 echo "Applying migrations..."
 python manage.py migrate --noinput
 
+# Check if superuser exists, if not, create one
+echo "Checking for superuser..."
+if [ -z "$(python manage.py shell -c 'from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(is_superuser=True).exists())')" ]; then
+    echo "Creating superuser..."
+    python manage.py createsuperuser --noinput
+else
+    echo "Superuser already exists."
+fi
+
 # Start Gunicorn
 echo "Starting Gunicorn..."
 exec gunicorn config.wsgi:application \

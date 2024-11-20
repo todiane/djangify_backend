@@ -1,7 +1,10 @@
 # config/settings/production.py
 from .base import *
 import dj_database_url
-    
+from dotenv import load_dotenv
+
+load_dotenv('.env.production')
+
 DEBUG = False
 ALLOWED_HOSTS = ['djangify.up.railway.app','djangify.com','djangifybackend.up.railway.app']  
 
