@@ -10,7 +10,6 @@ echo "Django version: $(python -m django --version)"
 echo "Environment: $DJANGO_SETTINGS_MODULE"
 
 # Create media directories
-mkdir -p media/blog
 mkdir -p media/portfolio
 mkdir -p media/summernote
 

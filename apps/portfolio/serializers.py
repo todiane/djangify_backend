@@ -1,8 +1,8 @@
 # Path: apps/portfolio/serializers.py
 
 from rest_framework import serializers
-from apps.portfolio.models import Technology, Portfolio, PortfolioImage
 from apps.core.serializers import TimeStampedModelSerializer, SEOModelSerializer
+from apps.portfolio.models import Technology, Portfolio, PortfolioImage
 
 
 class TechnologySerializer(TimeStampedModelSerializer):
@@ -18,15 +18,15 @@ class PortfolioImageSerializer(TimeStampedModelSerializer):
 
 
 class PortfolioSerializer(TimeStampedModelSerializer, SEOModelSerializer):
-    technologies = TechnologySerializer(many=True, read_only=True)
-    images = PortfolioImageSerializer(many=True, read_only=True)
+    technologies = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = Portfolio
         fields = [
             "id",
             "title",
-            "slug",
+            "slug", 
             "description",
             "short_description",
             "featured_image",
@@ -39,6 +39,13 @@ class PortfolioSerializer(TimeStampedModelSerializer, SEOModelSerializer):
             "created_at",
             "updated_at",
             "meta_title",
-            "meta_description",
+            "meta_description", 
             "meta_keywords",
         ]
+
+    def get_technologies(self, obj):
+        return TechnologySerializer(obj.technologies.all(), many=True).data
+
+    def get_images(self, obj):
+        return PortfolioImageSerializer(obj.images.all(), many=True).data
+    
