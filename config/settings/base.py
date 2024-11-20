@@ -102,33 +102,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# Base storage configuration
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    }
-}
-
-# Create a static directory if you plan to add custom static files
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
-
 # Image optimization settings
 PORTFOLIO_IMAGE_SIZE = (1200, 800)
 PORTFOLIO_GALLERY_IMAGE_SIZE = (1200, 800)
@@ -220,7 +193,5 @@ STORAGES = {
     },
 }
 
-if config('USE_PRODUCTION_DB', default='false').lower() == 'true':
-    STORAGES["staticfiles"]["BACKEND"] = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 

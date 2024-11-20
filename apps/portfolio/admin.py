@@ -5,25 +5,16 @@ from django.utils.html import format_html
 from django_summernote.admin import SummernoteModelAdmin
 from .models import Technology, Portfolio, PortfolioImage
 
-
 class PortfolioImageInline(admin.TabularInline):
     model = PortfolioImage
     extra = 1
-    fields = ("image", "caption", "order", "image_preview")
-    readonly_fields = ("image_preview",)
+    fields = ('image', 'image_url', 'caption', 'order', 'image_preview')
+    readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
-        if obj.image:
-            return format_html(
-                '<img src="{}" style="max-height: 50px;"/>', obj.image.url
-            )
+        if obj.display_image:
+            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.display_image)
         return "No image"
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset = super().get_formset(request, obj, **kwargs)
-        formset.form.base_fields["order"].required = False
-        return formset
-
 
 @admin.register(Technology)
 class TechnologyAdmin(admin.ModelAdmin):
@@ -32,19 +23,18 @@ class TechnologyAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     ordering = ["name", "-created_at"]
 
-
 @admin.register(Portfolio)
 class PortfolioAdmin(SummernoteModelAdmin):
     summernote_fields = ("description",)
-
     list_display = (
         "title",
-        "featured_image_preview",
+        "image_preview",
+        "external_url_type",
         "is_featured",
         "order",
         "created_at",
     )
-    list_filter = ("is_featured", "technologies", "created_at")
+    list_filter = ("is_featured", "external_url_type", "technologies", "created_at")
     search_fields = ("title", "description", "short_description")
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("technologies",)
@@ -54,10 +44,10 @@ class PortfolioAdmin(SummernoteModelAdmin):
 
     fieldsets = (
         ("Basic Information", {"fields": ("title", "slug", "short_description")}),
-        ("Content", {"fields": ("description", "featured_image", "technologies")}),
+        ("Content", {"fields": ("description", "featured_image", "featured_image_url", "technologies")}),
         (
             "Project Details",
-            {"fields": ("project_url", "github_url", "is_featured", "order")},
+            {"fields": ("external_url_type", "external_url", "is_featured", "order")},
         ),
         (
             "SEO",
@@ -68,18 +58,10 @@ class PortfolioAdmin(SummernoteModelAdmin):
         ),
     )
 
-    def featured_image_preview(self, obj):
-        if obj.featured_image:
-            return format_html(
-                '<img src="{}" style="max-height: 50px;"/>', obj.featured_image.url
-            )
+    def image_preview(self, obj):
+        if obj.display_image:
+            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.display_image)
         return "No image"
 
-    featured_image_preview.short_description = "Preview"
-
-    class Media:
-        js = (
-            "admin/js/vendor/jquery/jquery.min.js",
-            "admin/js/jquery.init.js",
-            "js/admin_customizations.js",
-        )
+    image_preview.short_description = "Preview"
+    
