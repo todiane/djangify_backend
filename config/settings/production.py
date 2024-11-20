@@ -8,14 +8,23 @@ load_dotenv('.env.production')
 DEBUG = False
 ALLOWED_HOSTS = ['djangify.up.railway.app','djangify.com','djangifybackend.up.railway.app']  
 
-# Production database settings
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL'),
         conn_max_age=600,
         conn_health_checks=True,
-        ssl_require=True
+        ssl_require=True,
+        # ssl_cert_reqs=None  # Disables certificate verification
     )
+}
+
+# Database connection settings
+CONN_MAX_AGE = 60
+CONN_HEALTH_CHECKS = True
+
+# Required for PostgreSQL over SSL
+DATABASES['default']['OPTIONS'] = {
+    'sslmode': 'require',
 }
 
 # Production allowed hosts

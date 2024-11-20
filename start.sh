@@ -19,7 +19,11 @@ python manage.py collectstatic --noinput
 
 # Apply database migrations
 echo "Applying migrations..."
-python manage.py migrate --noinput
+python manage.py makemigrations --force-color
+python manage.py migrate --force-color
+
+# Add debug info for migrations
+python manage.py showmigrations
 
 # Check if superuser exists, if not, create one
 echo "Checking for superuser..."
