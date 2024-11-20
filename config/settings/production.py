@@ -8,22 +8,17 @@ ALLOWED_HOSTS = ['djangify.up.railway.app','djangify.com','djangifybackend.up.ra
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
+        default=os.getenv('DATABASE_URL'),
         conn_max_age=600,
         conn_health_checks=True,
-        ssl_require=True
     )
 }
-
-
-# Database connection settings
-CONN_MAX_AGE = 60
-CONN_HEALTH_CHECKS = True
 
 # Production allowed hosts
 ALLOWED_HOSTS = [
     "djangify.up.railway.app",
     "djangifybackend.up.railway.app",
+    "junction.proxy.rlwy.net", 
 ]
 
 # Security settings
