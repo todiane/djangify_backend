@@ -6,13 +6,17 @@ from .logging import LOGGING
 from datetime import timedelta
 
 
-from decouple import config
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Near the top, after imports but before APPEND_SLASH
+if os.path.exists(os.path.join(BASE_DIR, '.env.production')):
+    load_dotenv(os.path.join(BASE_DIR, '.env.production'))
+else:
+    load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 APPEND_SLASH = True
 

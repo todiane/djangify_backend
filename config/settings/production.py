@@ -1,38 +1,33 @@
 # config/settings/production.py
 from .base import *
-import dj_database_url
-from dotenv import load_dotenv
 
-load_dotenv('.env.production')
 
 DEBUG = False
 ALLOWED_HOSTS = ['djangify.up.railway.app','djangify.com','djangifybackend.up.railway.app']  
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-        ssl_require=True,
-        # ssl_cert_reqs=None  # Disables certificate verification
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('PGDATABASE', 'railway'),
+        'USER': os.getenv('PGUSER', 'postgres'),
+        'PASSWORD': os.getenv('PGPASSWORD'),
+        'HOST': os.getenv('PGHOST', 'postgres.railway.internal'),
+        'PORT': os.getenv('PGPORT', '5432'),
+        'OPTIONS': {
+            'sslmode': 'require',
+        }
+    }
 }
 
 # Database connection settings
 CONN_MAX_AGE = 60
 CONN_HEALTH_CHECKS = True
 
-# Required for PostgreSQL over SSL
-DATABASES['default']['OPTIONS'] = {
-    'sslmode': 'require',
-}
-
 # Production allowed hosts
 ALLOWED_HOSTS = [
     "djangify.up.railway.app",
     "djangifybackend.up.railway.app",
 ]
-
 
 # Security settings
 SECURE_SSL_REDIRECT = True
@@ -41,7 +36,6 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
-
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
@@ -67,7 +61,6 @@ WHITENOISE_ALLOW_ALL_ORIGINS = True
 
 # Ensure static files are properly handled
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 
 INSTALLED_APPS += [
     'cloudinary',
