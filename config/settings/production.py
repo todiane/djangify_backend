@@ -1,4 +1,5 @@
 # config/settings/production.py
+import dj_database_url
 from .base import *
 
 
@@ -6,18 +7,14 @@ DEBUG = False
 ALLOWED_HOSTS = ['djangify.up.railway.app','djangify.com','djangifybackend.up.railway.app']  
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('PGDATABASE', 'railway'),
-        'USER': os.getenv('PGUSER', 'postgres'),
-        'PASSWORD': os.getenv('PGPASSWORD'),
-        'HOST': os.getenv('PGHOST', 'postgres.railway.internal'),
-        'PORT': os.getenv('PGPORT', '5432'),
-        'OPTIONS': {
-            'sslmode': 'require',
-        }
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+        ssl_require=True
+    )
 }
+
 
 # Database connection settings
 CONN_MAX_AGE = 60

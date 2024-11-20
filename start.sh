@@ -25,6 +25,10 @@ python manage.py migrate --force-color
 # Add debug info for migrations
 python manage.py showmigrations
 
+# Debug database connection
+echo "Testing database connection..."
+python manage.py shell -c "from django.db import connection; cursor = connection.cursor(); cursor.execute('SELECT 1'); print('Database connection successful')"
+
 # Check if superuser exists, if not, create one
 echo "Checking for superuser..."
 if [ -z "$(python manage.py shell -c 'from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(is_superuser=True).exists())')" ]; then
