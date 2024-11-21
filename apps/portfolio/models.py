@@ -2,9 +2,24 @@ from django.db import models
 from cloudinary.models import CloudinaryField
 
 class Technology(models.Model):
+    TECH_CATEGORIES = [
+        ('frontend', 'Frontend'),
+        ('backend', 'Backend'),
+        ('database', 'Database'),
+        ('devops', 'DevOps'),
+        ('mobile', 'Mobile'),
+        ('other', 'Other')
+    ]
+
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     icon = models.CharField(max_length=50)
+    category = models.CharField(
+        max_length=20,
+        choices=TECH_CATEGORIES,
+        default='other',
+        help_text="Category of the technology"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -20,6 +35,12 @@ class Portfolio(models.Model):
         ('github', 'GitHub Repository'),
         ('marketplace', 'Marketplace Listing'),
     )
+
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived')
+    ]
 
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -37,6 +58,12 @@ class Portfolio(models.Model):
     external_url = models.URLField(blank=True)
     is_featured = models.BooleanField(default=False)
     order = models.IntegerField(default=0)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='draft',
+        help_text="Current status of the portfolio item"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     meta_title = models.CharField(max_length=60, blank=True)
@@ -72,4 +99,3 @@ class PortfolioImage(models.Model):
 
     def __str__(self):
         return f"{self.portfolio.title} - Image {self.order}"
-    

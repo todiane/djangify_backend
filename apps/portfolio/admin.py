@@ -1,5 +1,3 @@
-# Path: apps/portfolio/admin.py
-
 from django.contrib import admin
 from django.utils.html import format_html
 from django_summernote.admin import SummernoteModelAdmin
@@ -18,7 +16,8 @@ class PortfolioImageInline(admin.TabularInline):
 
 @admin.register(Technology)
 class TechnologyAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "icon")
+    list_display = ("name", "slug", "icon", "category")
+    list_filter = ("category",)
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
     ordering = ["name", "-created_at"]
@@ -29,21 +28,22 @@ class PortfolioAdmin(SummernoteModelAdmin):
     list_display = (
         "title",
         "image_preview",
+        "status",
         "external_url_type",
         "is_featured",
         "order",
         "created_at",
     )
-    list_filter = ("is_featured", "external_url_type", "technologies", "created_at")
+    list_filter = ("status", "is_featured", "external_url_type", "technologies", "created_at")
     search_fields = ("title", "description", "short_description")
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("technologies",)
     inlines = [PortfolioImageInline]
-    list_editable = ("order", "is_featured")
+    list_editable = ("order", "is_featured", "status")
     ordering = ["order", "-created_at"]
 
     fieldsets = (
-        ("Basic Information", {"fields": ("title", "slug", "short_description")}),
+        ("Basic Information", {"fields": ("title", "slug", "short_description", "status")}),
         ("Content", {"fields": ("description", "featured_image", "featured_image_url", "technologies")}),
         (
             "Project Details",
