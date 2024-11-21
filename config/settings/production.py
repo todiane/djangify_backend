@@ -1,25 +1,9 @@
 # config/settings/production.py
-import dj_database_url
 from .base import *
 
-
+USE_PRODUCTION_DB = True
 DEBUG = False
-ALLOWED_HOSTS = ['djangify.up.railway.app','djangify.com','djangifybackend.up.railway.app']  
-
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
-
-# Production allowed hosts
-ALLOWED_HOSTS = [
-    "djangify.up.railway.app",
-    "djangifybackend.up.railway.app",
-    "junction.proxy.rlwy.net", 
-]
+ALLOWED_HOSTS = ['djangify.up.railway.app', '.railway.app', 'djangifybackend.up.railway.app']
 
 # Security settings
 SECURE_SSL_REDIRECT = True

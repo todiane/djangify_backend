@@ -10,7 +10,7 @@ services:
       - media_data:/app/media
       - static_data:/app/static
     env_file:
-      - .env.development
+      - .env
     environment:
       - PYTHONUNBUFFERED=1
     command: >

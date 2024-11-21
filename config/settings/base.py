@@ -4,7 +4,9 @@ import os
 from dotenv import load_dotenv
 from .logging import LOGGING
 from datetime import timedelta
-
+from decouple import config
+from urllib.parse import urlparse
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -12,20 +14,61 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Load environment variables from .env file
 load_dotenv()
 
-# Near the top, after imports but before APPEND_SLASH
-if os.path.exists(os.path.join(BASE_DIR, '.env.production')):
-    load_dotenv(os.path.join(BASE_DIR, '.env.production'))
-else:
-    load_dotenv(os.path.join(BASE_DIR, '.env'))
-
 APPEND_SLASH = True
 
-DATABASES = {}  # Empty dict since DB settings are in environment-specific files
+# Database Configuration
+
+import logging
+logger = logging.getLogger(__name__)
+
+USE_PRODUCTION_DB = config('USE_PRODUCTION_DB', default='false').lower() == 'true'
+
+if USE_PRODUCTION_DB:
+    try:
+        # Try to get the public URL first, fallback to internal URL
+        DATABASE_URL = config('DATABASE_PUBLIC_URL', 
+                            default=config('DATABASE_URL'))
+        
+        logger.info(f"Connecting to production database...")
+        
+        DATABASES = {
+            'default': dj_database_url.config(
+                default=DATABASE_URL,
+                conn_max_age=600,
+                conn_health_checks=True,
+                ssl_require=True
+            )
+        }
+        
+        # Add production-specific options
+        DATABASES['default']['OPTIONS'] = {
+            'sslmode': 'require',
+            'keepalives': 1,
+            'keepalives_idle': 30,
+            'keepalives_interval': 10,
+            'keepalives_count': 5,
+        }
+        
+        logger.info("Database configuration completed")
+        
+    except Exception as e:
+        logger.error(f"Error configuring database: {str(e)}")
+        raise
+else:
+    logger.info("Using SQLite database")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+
 
 # Application definition
 INSTALLED_APPS = [
