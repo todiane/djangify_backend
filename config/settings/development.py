@@ -1,11 +1,20 @@
 # config/settings/development.py
 import environ
+
 from .base import *
 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 DEBUG = True
+
+# Database Configuration - using SQLite for development
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Ensure SSL redirect is disabled in development
@@ -50,5 +59,3 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
-LOGGING["loggers"]["django"]["level"] = "DEBUG"
-LOGGING["loggers"]["apps"]["level"] = "DEBUG"

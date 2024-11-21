@@ -1,5 +1,4 @@
 # Path: apps/portfolio/views.py
-
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
@@ -12,10 +11,6 @@ from apps.portfolio.serializers import (
     PortfolioImageSerializer,
 )
 from apps.core.utils import ImageHandler
-import logging
-
-logger = logging.getLogger(__name__)
-
 
 class TechnologyViewSet(BaseViewSet):
     queryset = Technology.objects.all()
@@ -24,7 +19,6 @@ class TechnologyViewSet(BaseViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ["name"]
     http_method_names = ["get"]  # Read-only operations
-
 
 class PortfolioViewSet(BaseViewSet):
     serializer_class = PortfolioSerializer
@@ -40,52 +34,27 @@ class PortfolioViewSet(BaseViewSet):
     ordering = ["order", "-created_at"]
 
     def get_queryset(self):
-        logger.info("Fetching portfolio queryset")
-        queryset = Portfolio.objects.prefetch_related("technologies", "images")
-        count = queryset.count()
-        logger.info(f"Found {count} portfolio items")
-        return queryset
-
-    def list(self, request, *args, **kwargs):
-        logger.info("Portfolio list endpoint called")
-        response = super().list(request, *args, **kwargs)
-        logger.info(f"Portfolio list response data: {response.data}")
-        return response
-    
-    def retrieve(self, request, *args, **kwargs):
-        logger.info(f"Portfolio retrieve called with kwargs: {kwargs}")
-        response = super().retrieve(request, *args, **kwargs)
-        logger.info(f"Portfolio retrieve response data: {response.data}")
-        return response
+        return Portfolio.objects.prefetch_related("technologies", "images")
 
     def perform_create(self, serializer):
-        logger.info("Creating new portfolio item")
         instance = serializer.save()
         if instance.featured_image:
             try:
-                path = ImageHandler.save_and_optimize_image(
+                ImageHandler.save_and_optimize_image(
                     instance.featured_image, "portfolio/images"
                 )
-                logger.info(f"Image saved at: {path}")
             except Exception as e:
-                logger.error(
-                    f"Error optimizing image for portfolio {instance.title}: {str(e)}"
-                )
+                print(f"Error optimizing image for portfolio {instance.title}: {str(e)}")
 
     def perform_update(self, serializer):
-        logger.info("Updating portfolio item")
         instance = serializer.save()
         if instance.featured_image:
             try:
-                path = ImageHandler.save_and_optimize_image(
+                ImageHandler.save_and_optimize_image(
                     instance.featured_image, "portfolio/images"
                 )
-                logger.info(f"Image updated at: {path}")
             except Exception as e:
-                logger.error(
-                    f"Error optimizing image for portfolio {instance.title}: {str(e)}"
-                )
-
+                print(f"Error optimizing image for portfolio {instance.title}: {str(e)}")
 
 class PortfolioImageViewSet(BaseViewSet):
     queryset = PortfolioImage.objects.all()
@@ -101,7 +70,7 @@ class PortfolioImageViewSet(BaseViewSet):
                     instance.image, "portfolio/gallery"
                 )
             except Exception as e:
-                logger.error(f"Error optimizing portfolio image: {str(e)}")
+                print(f"Error optimizing portfolio image: {str(e)}")
 
     def perform_update(self, serializer):
         instance = serializer.save()
@@ -111,4 +80,4 @@ class PortfolioImageViewSet(BaseViewSet):
                     instance.image, "portfolio/gallery"
                 )
             except Exception as e:
-                logger.error(f"Error optimizing portfolio image: {str(e)}")
+                print(f"Error optimizing portfolio image: {str(e)}")

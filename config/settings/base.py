@@ -2,8 +2,6 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from .logging import LOGGING
-from datetime import timedelta
 from decouple import config
 from urllib.parse import urlparse
 import dj_database_url
@@ -16,59 +14,17 @@ load_dotenv()
 
 APPEND_SLASH = True
 
-# Database Configuration
-
-import logging
-logger = logging.getLogger(__name__)
-
-USE_PRODUCTION_DB = config('USE_PRODUCTION_DB', default='false').lower() == 'true'
-
-if USE_PRODUCTION_DB:
-    try:
-        # Try to get the public URL first, fallback to internal URL
-        DATABASE_URL = config('DATABASE_PUBLIC_URL', 
-                            default=config('DATABASE_URL'))
-        
-        logger.info(f"Connecting to production database...")
-        
-        DATABASES = {
-            'default': dj_database_url.config(
-                default=DATABASE_URL,
-                conn_max_age=600,
-                conn_health_checks=True,
-                ssl_require=True
-            )
-        }
-        
-        # Add production-specific options
-        DATABASES['default']['OPTIONS'] = {
-            'sslmode': 'require',
-            'keepalives': 1,
-            'keepalives_idle': 30,
-            'keepalives_interval': 10,
-            'keepalives_count': 5,
-        }
-        
-        logger.info("Database configuration completed")
-        
-    except Exception as e:
-        logger.error(f"Error configuring database: {str(e)}")
-        raise
-else:
-    logger.info("Using SQLite database")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-
+}
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -85,14 +41,10 @@ INSTALLED_APPS = [
     "django_summernote",
     "whitenoise.runserver_nostatic",
     "dj_database_url",
-    "drf_spectacular",
     "django.contrib.sitemaps",
-    "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",
     # Local apps
     "apps.core.apps.CoreConfig",
     "apps.portfolio.apps.PortfolioConfig",
-    "apps.authentication.apps.AuthenticationConfig",
 ]
 
 MIDDLEWARE = [
@@ -157,19 +109,18 @@ PORTFOLIO_IMAGE_QUALITY = 85
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Make sure you have ADMINS setting for error emails
-ADMINS = [("Diane", "djangify@gmail.com")]  # U
+ADMINS = [("Diane", "djangify@gmail.com")]
 
-# Update REST_FRAMEWORK settings in base.py
+# Update REST_FRAMEWORK settings
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+        "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "ORDERING_PARAM": "ordering",
@@ -179,57 +130,15 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "anon": "100/hour",  # Limit anonymous users to 100 requests per hour
-        "user": "1000/hour",  # Limit authenticated users to 1000 requests per hour
+        "anon": "100/hour",
+        "user": "1000/hour",
     },
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-}
-
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
-    "UPDATE_LAST_LOGIN": False,
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": os.environ.get("DJANGO_SECRET_KEY"),
-    "VERIFYING_KEY": None,
-    "AUDIENCE": None,
-    "ISSUER": None,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-    "JTI_CLAIM": "jti",
 }
 
 # Summernote settings
 SUMMERNOTE_CONFIG = {
     "attachment_filesize_limit": 5 * 1024 * 1024,  # 5MB
 }
-
-# Spectacular settings
-SPECTACULAR_SETTINGS = {
-    "TITLE": "Djangify API",
-    "DESCRIPTION": "API documentation for Djangify Portfolio Backend",
-    "VERSION": "1.0.0",
-    "SERVE_INCLUDE_SCHEMA": False,
-    "COMPONENT_SPLIT_REQUEST": True,
-    "SCHEMA_PATH_PREFIX": "/api/v1",
-}
-
-SLOW_QUERY_THRESHOLD = 1.0  # seconds
-MIDDLEWARE += [
-    "apps.core.middleware.PerformanceMonitoringMiddleware",
-    "apps.core.middleware.APIMonitoringMiddleware",
-]
 
 STORAGES = {
     "default": {
@@ -239,6 +148,3 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
-
-
-

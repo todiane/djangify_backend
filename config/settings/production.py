@@ -1,9 +1,33 @@
 # config/settings/production.py
 from .base import *
 
-USE_PRODUCTION_DB = True
 DEBUG = False
-ALLOWED_HOSTS = ['djangify.up.railway.app', '.railway.app', 'djangifybackend.up.railway.app']
+
+# Database Configuration
+DATABASE_URL = os.environ.get('DATABASE_PRIVATE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True
+        )
+    }
+    
+    # Updated database options with correct PostgreSQL settings
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
+        'keepalives': 1,
+        'keepalives_idle': 30,
+        'keepalives_interval': 10,
+        'keepalives_count': 5,
+        'connect_timeout': 30,
+    }
+
+
+
+ALLOWED_HOSTS = ['djangify.up.railway.app','djangifybackend.up.railway.app']
 
 # Security settings
 SECURE_SSL_REDIRECT = True

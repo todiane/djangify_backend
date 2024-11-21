@@ -20,11 +20,6 @@ python manage.py collectstatic --noinput
 echo "Testing database connection..."
 python manage.py check --database default
 
-# Create migrations for all apps
-echo "Creating migrations..."
-python manage.py makemigrations django_summernote --noinput
-python manage.py makemigrations --noinput
-
 # Apply migrations
 echo "Applying migrations..."
 python manage.py migrate --noinput --force-color
@@ -48,16 +43,10 @@ else:
     print("Superuser already exists")
 EOF
 
-# Start Gunicorn with debug logging
+# Start Gunicorn
 echo "Starting Gunicorn..."
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:${PORT:-8000} \
     --workers 2 \
     --threads 2 \
-    --timeout 120 \
-    --access-logfile - \
-    --error-logfile - \
-    --capture-output \
-    --enable-stdio-inheritance \
-    --log-level debug
-    
+    --timeout 120

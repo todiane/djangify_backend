@@ -1,19 +1,12 @@
 # Path: apps/core/models.py
-
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
-import logging
-
-
-logger = logging.getLogger(__name__)
-
 
 class TimeStampedModel(models.Model):
     """
     Abstract base model providing automatic timestamps.
     """
-
     created_at = models.DateTimeField(
         default=timezone.now, help_text="The datetime this object was created"
     )
@@ -25,12 +18,10 @@ class TimeStampedModel(models.Model):
         abstract = True
         ordering = ['-created_at'] 
 
-
 class SEOModel(models.Model):
     """
     Abstract base model providing SEO fields.
     """
-
     meta_title = models.CharField(
         max_length=60,
         blank=True,
@@ -50,12 +41,10 @@ class SEOModel(models.Model):
     class Meta:
         abstract = True
 
-
 class SluggedModel(models.Model):
     """
     Abstract base model providing slug functionality.
     """
-
     title = models.CharField(max_length=200, help_text="Title of the content")
     slug = models.SlugField(
         max_length=100, unique=True, help_text="URL-friendly version of the title"
@@ -68,3 +57,4 @@ class SluggedModel(models.Model):
 
     class Meta:
         abstract = True
+        
