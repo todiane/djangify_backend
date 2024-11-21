@@ -11,8 +11,7 @@ media/
 staticfiles/
 .git
 .gitignore
-.dockerignore
-Dockerfile
+
 README.md
 *.sqlite3
 .idea/

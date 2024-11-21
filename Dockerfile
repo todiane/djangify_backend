@@ -1,26 +1,20 @@
 # Build stage
 FROM python:3.11.10-slim as builder
 
-# Install Poetry and system dependencies for PostgreSQL
+# Install system dependencies for PostgreSQL
 RUN apt-get update && apt-get install -y \
   libpq-dev \
   gcc \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry
-RUN pip install poetry
-
 # Set working directory
 WORKDIR /app
 
-# Copy poetry files
-COPY pyproject.toml poetry.lock ./
-
-# Configure poetry to create venv in project directory
-RUN poetry config virtualenvs.create false
+# Copy requirements
+COPY requirements.txt .
 
 # Install dependencies
-RUN poetry install --no-interaction --no-ansi --no-root
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
@@ -42,7 +36,7 @@ COPY --from=builder /app .
 # Create necessary directories
 RUN mkdir -p staticfiles static media/portfolio media/summernote
 
-# Only set non-sensitive environment variable
+# Set environment variables
 ENV PYTHONUNBUFFERED=1
 
 # Expose port

@@ -1,0 +1,9 @@
+[build]
+builder = "nixpacks"
+buildCommand = "pip install -r requirements.txt"
+
+[deploy]
+healthcheckTimeout = 100
+
+[service]
+autoDeploy = true
