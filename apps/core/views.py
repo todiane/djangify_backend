@@ -9,7 +9,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
-from apps.core.auth import UserSerializer
+
 
 @csrf_exempt
 @require_GET
@@ -44,12 +44,6 @@ class BaseViewSet(viewsets.ModelViewSet):
             message=str(exc), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-class UserDetailView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
 
 def custom_404(request, exception):
     print(f"404 error: {exception}")
