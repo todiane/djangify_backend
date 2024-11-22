@@ -1,31 +1,19 @@
 #!/bin/bash
-
-# Exit on error
 set -e
 
-# Debug information
+export DJANGO_SETTINGS_MODULE=config.settings
+
 echo "Current directory: $(pwd)"
 echo "Python version: $(python --version)"
 echo "Django version: $(python -m django --version)"
 echo "Environment: $DJANGO_SETTINGS_MODULE"
 
-# Create necessary directories
 mkdir -p media/portfolio media/summernote staticfiles static
 
-# Collect static files
-echo "Collecting static files..."
 python manage.py collectstatic --noinput
-
-# Test database connection
-echo "Testing database connection..."
 python manage.py check --database default
-
-# Apply migrations
-echo "Applying migrations..."
 python manage.py migrate --noinput --force-color
 
-# Create superuser if it doesn't exist
-echo "Checking for superuser..."
 python manage.py shell <<EOF
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -43,10 +31,9 @@ else:
     print("Superuser already exists")
 EOF
 
-# Start Gunicorn
-echo "Starting Gunicorn..."
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:${PORT:-8000} \
     --workers 2 \
     --threads 2 \
     --timeout 120
+    
