@@ -1,33 +1,21 @@
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:8000" # Map Railway's external port 8080 to Django's internal port 8000
     environment:
-      - DOCKER_CONTAINER=true
-      - DEBUG=False
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-      - DATABASE_URL=${DATABASE_URL}
-      - PORT=8080
-    volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
+      DATABASE_URL: "${DATABASE_URL}" # Pulled from Railway's environment variables
+      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}" # Pulled from Railway's environment variables
+      PORT: "8000" # Internal port
     depends_on:
       - db
+    command: [ "./start.sh" ]
 
   db:
     image: postgres:14
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-
-volumes:
-  static_volume:
-  media_volume:
-  postgres_data:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}" # Use environment variable
+      POSTGRES_DB: railway

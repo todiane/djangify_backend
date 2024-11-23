@@ -3,13 +3,15 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 
+# Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-IS_DOCKER = os.environ.get('DOCKER_CONTAINER') == 'true'
-
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -18,19 +20,7 @@ ALLOWED_HOSTS = [
     'djangifybackend.up.railway.app'
 ]
 
-# Database configuration
-if IS_DOCKER:
-    DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -38,15 +28,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third party apps
     "rest_framework",
     "corsheaders",
     "django_filters",
     "django_summernote",
     "whitenoise.runserver_nostatic",
-    "dj_database_url",
-    "django.contrib.sitemaps",
     "cloudinary",
     "cloudinary_storage",
+    # Local apps
     "apps.core.apps.CoreConfig",
     "apps.portfolio.apps.PortfolioConfig",
 ]
@@ -83,6 +73,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+# Database configuration - comment out local database and set debug to false in production. to use comment out production database and set debug to true.
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+DATABASES = {"default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))}
+
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -90,16 +91,25 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Static and media file
+# Security settings
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Static and media files
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Cloudinary settings
@@ -110,22 +120,17 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-STATICFILES_STORAGE = "cloudinary_storage.storage.StaticHashedCloudinaryStorage"
-
-# Security settings
-SECURE_SSL_REDIRECT = IS_DOCKER  # Only redirect in Docker/production
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") if IS_DOCKER else None
-SESSION_COOKIE_SECURE = IS_DOCKER
-CSRF_COOKIE_SECURE = IS_DOCKER
 
 # CORS settings
-if IS_DOCKER:
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
     CORS_ALLOWED_ORIGINS = [
         "https://djangify.up.railway.app",
         "https://djangifybackend.up.railway.app",
     ]
-else:
-    CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
@@ -133,14 +138,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://djangifybackend.up.railway.app",
 ]
 
-if not IS_DOCKER:
+if DEBUG:
     CSRF_TRUSTED_ORIGINS.extend([
         'http://localhost:3000',
         'http://127.0.0.1:3000',
     ])
-    
-# Frontend URL
-FRONTEND_URL = "https://djangify.up.railway.app" if not DEBUG else "http://localhost:3000"
+
 
 # REST Framework settings
 REST_FRAMEWORK = {
@@ -153,15 +156,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "ORDERING_PARAM": "ordering",
-    "DEFAULT_ORDERING": ["-created_at"],
-    "DEFAULT_THROTTLE_CLASSES": [
-        "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle",
-    ],
-    "DEFAULT_THROTTLE_RATES": {
-        "anon": "100/hour",
-        "user": "1000/hour",
-    },
 }
 
 # Image settings
@@ -169,15 +163,4 @@ PORTFOLIO_IMAGE_SIZE = (1200, 800)
 PORTFOLIO_GALLERY_IMAGE_SIZE = (1200, 800)
 PORTFOLIO_IMAGE_QUALITY = 85
 
-# Summernote settings
-SUMMERNOTE_CONFIG = {
-    "attachment_filesize_limit": 5 * 1024 * 1024,
-}
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-ADMINS = [("Diane", "djangify@gmail.com")]
-
-# WhiteNoise settings
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_ALLOW_ALL_ORIGINS = True
