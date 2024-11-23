@@ -21,7 +21,7 @@ ALLOWED_HOSTS = [
 # Database configuration
 DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
 
-# Comment out above and uncomment below for local SQLite
+# Comment out above and uncomment below for local SQLite. Set DEBUG to True.
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -101,7 +101,7 @@ CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 
-# Static and media files
+# Static and media file
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
