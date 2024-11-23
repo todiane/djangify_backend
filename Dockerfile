@@ -37,31 +37,26 @@ RUN mkdir -p staticfiles static media/portfolio media/summernote \
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
-  DJANGO_SETTINGS_MODULE=config.settings \
   PYTHONDONTWRITEBYTECODE=1 \
+  DOCKER_CONTAINER=true \
+  DEBUG=False \
   PORT=8080 \
   HOST=0.0.0.0
 
 # Explicitly expose port 8080
 EXPOSE 8080
 
-# Copy and set up start script with explicit binding to 0.0.0.0
+# Create and set up start script
 RUN echo '#!/bin/bash\n\
   set -e\n\
-  \n\
-  echo "Initializing Django application..."\n\
-  \n\
-  # Create directories\n\
-  mkdir -p media/portfolio media/summernote staticfiles static apps/*/migrations\n\
   \n\
   # Wait for PostgreSQL\n\
   if [ -n "$DATABASE_HOST" ]; then\n\
   echo "Waiting for PostgreSQL..."\n\
   while ! nc -z $DATABASE_HOST ${DATABASE_PORT:-5432}; do\n\
-  echo "PostgreSQL is unavailable - sleeping"\n\
   sleep 1\n\
   done\n\
-  echo "PostgreSQL is up - continuing"\n\
+  echo "PostgreSQL is up"\n\
   fi\n\
   \n\
   python manage.py migrate --noinput\n\

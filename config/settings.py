@@ -1,5 +1,3 @@
-# config/settings.py
-
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -8,8 +6,10 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+IS_DOCKER = os.environ.get('DOCKER_CONTAINER') == 'true'
+
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -19,15 +19,17 @@ ALLOWED_HOSTS = [
 ]
 
 # Database configuration
-DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
-
-# Comment out above and uncomment below for local SQLite. Set DEBUG to True.
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+if IS_DOCKER:
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -93,14 +95,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Security settings
-SECURE_SSL_REDIRECT = not DEBUG
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SAMESITE = 'Lax'
-
 # Static and media file
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -118,17 +112,20 @@ CLOUDINARY_STORAGE = {
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 STATICFILES_STORAGE = "cloudinary_storage.storage.StaticHashedCloudinaryStorage"
 
+# Security settings
+SECURE_SSL_REDIRECT = IS_DOCKER  # Only redirect in Docker/production
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") if IS_DOCKER else None
+SESSION_COOKIE_SECURE = IS_DOCKER
+CSRF_COOKIE_SECURE = IS_DOCKER
+
 # CORS settings
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
-else:
+if IS_DOCKER:
     CORS_ALLOWED_ORIGINS = [
         "https://djangify.up.railway.app",
         "https://djangifybackend.up.railway.app",
     ]
-
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
+else:
+    CORS_ALLOW_ALL_ORIGINS = True
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
@@ -136,12 +133,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://djangifybackend.up.railway.app",
 ]
 
-if DEBUG:
+if not IS_DOCKER:
     CSRF_TRUSTED_ORIGINS.extend([
         'http://localhost:3000',
         'http://127.0.0.1:3000',
     ])
-
+    
 # Frontend URL
 FRONTEND_URL = "https://djangify.up.railway.app" if not DEBUG else "http://localhost:3000"
 
