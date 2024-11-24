@@ -1,31 +1,33 @@
-# Use the slim Python image for efficiency
-FROM python:3.11.10-slim
+# Use the official Python image as a parent image
+FROM python:3.10-slim
 
-# Set environment variables for Python
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Set working directory in the container
+# Set the working directory
 WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
   build-essential \
   libpq-dev \
-  && apt-get clean
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Copy and install Python dependencies
 COPY requirements.txt /app/
-RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip \
+  && pip install --no-cache-dir -r requirements.txt
 
-# Copy the application files
+# Copy the application code
 COPY . /app/
 
-# Expose the port your application will run on
-EXPOSE ${PORT:-8000}
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Set up start script permissions
-RUN chmod +x start.sh
+# Ensure migrations don't hang by enabling a timeout for the Docker container
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s CMD curl --fail http://localhost:${PORT:-8080} || exit 1
 
-# Run the application using your start.sh script
+# Expose port
+EXPOSE 8080
+
+# Run the entrypoint script
 CMD ["./start.sh"]

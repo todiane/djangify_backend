@@ -7,6 +7,13 @@ from rest_framework.response import Response
 from django.contrib.sitemaps.views import sitemap
 from apps.core.sitemaps import PortfolioSitemap, StaticSitemap
 from django.views.generic import TemplateView
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def health_check(request):
+    """Basic health check endpoint for Railway deployment"""
+    return HttpResponse("OK")
 
 sitemaps = {
     "portfolio": PortfolioSitemap,
@@ -23,7 +30,7 @@ def api_root(request):
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("summernote/", include("django_summernote.urls")),
+    path("api/health/", health_check, name="health_check"),
     path("api/", include("apps.core.urls")),
     path("api/v1/", api_root, name="api-root"),
     path("api/v1/portfolio/", include("apps.portfolio.urls")),

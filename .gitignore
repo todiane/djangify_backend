@@ -38,6 +38,7 @@ media/
 
 # VSCode
 .vscode/
+venv/
 
 # Static files
 staticfiles/

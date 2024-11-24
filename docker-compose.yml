@@ -3,19 +3,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - PORT=8080
     ports:
-      - "8080:8000" # Map Railway's external port 8080 to Django's internal port 8000
+      - "8080:8080" # Map host port 8080 to container port 8080
     environment:
-      DATABASE_URL: "${DATABASE_URL}" # Pulled from Railway's environment variables
-      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}" # Pulled from Railway's environment variables
-      PORT: "8000" # Internal port
+      - PORT=8080
+      - DATABASE_URL=${DATABASE_URL}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_SETTINGS_MODULE=config.settings
     depends_on:
       - db
-    command: [ "./start.sh" ]
 
   db:
     image: postgres:14
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}" # Use environment variable
-      POSTGRES_DB: railway
+      - POSTGRES_DB=railway
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}

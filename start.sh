@@ -1,82 +1,52 @@
 #!/bin/bash
 
-# Enable error handling and command printing
+# Exit on error
 set -e
-set -x
 
-echo "==============================================="
-echo "Starting Django Deployment Process $(date)"
-echo "==============================================="
+echo "Starting application deployment: $(date)"
 
-# Log environment information
-echo "Environment Details:"
-echo "Python Version: $(python --version)"
-echo "Current Directory: $(pwd)"
-echo "Django Settings Module: $DJANGO_SETTINGS_MODULE"
-echo "Database URL Check: ${DATABASE_URL:0:20}..." # Show only beginning for security
+# Function to run migrations with error handling
+run_migrations() {
+    echo "Running migrations..."
+    if python manage.py migrate --noinput; then
+        echo "Migrations completed successfully"
+    else
+        echo "Migration failed. Exiting."
+        exit 1
+    fi
+}
 
-# Create necessary directories with verbose output
-echo "Creating required directories..."
-mkdir -p media/portfolio media/summernote staticfiles static
-echo "Directories created successfully"
+# Function to collect static files with error handling
+collect_static() {
+    echo "Collecting static files..."
+    if python manage.py collectstatic --noinput; then
+        echo "Static files collected successfully"
+    else
+        echo "Static file collection failed. Exiting."
+        exit 1
+    fi
+}
 
-# Test database connection
-echo "Testing database connection..."
-python << END
-import django
-from django.conf import settings
-from django.db import connections
-django.setup()
-db = connections['default']
-try:
-    c = db.cursor()
-    print("Database connection successful!")
-except Exception as e:
-    print(f"Database connection failed: {str(e)}")
-    raise
-END
+# Kill any hanging processes before starting
+clean_up() {
+    echo "Cleaning up any previous processes..."
+    pkill -f "manage.py" || true
+    pkill -f "gunicorn" || true
+}
 
-# Collect static files with detailed output
-echo "Collecting static files..."
-python manage.py collectstatic --noinput -v 2
+# Ensure migrations don't hang by cleaning up before running
+clean_up
 
-# Run migrations with detailed output
-echo "Running database migrations..."
-python manage.py migrate --noinput --force-color -v 2
+# Run setup tasks
+collect_static
+run_migrations
 
-# Check for superuser
-echo "Checking for superuser..."
-python << END
-import django
-django.setup()
-from django.contrib.auth import get_user_model
-User = get_user_model()
-if not User.objects.filter(is_superuser=True).exists():
-    try:
-        User.objects.create_superuser(
-            username='${DJANGO_SUPERUSER_USERNAME:-admin}',
-            email='${DJANGO_SUPERUSER_EMAIL:-admin@example.com}',
-            password='${DJANGO_SUPERUSER_PASSWORD:-admin}'
-        )
-        print("Superuser created successfully")
-    except Exception as e:
-        print(f"Error creating superuser: {e}")
-else:
-    print("Superuser already exists")
-END
-
-echo "==============================================="
-echo "Starting Gunicorn $(date)"
-echo "==============================================="
-
-# Start Gunicorn with enhanced logging
+echo "Starting Gunicorn..."
 exec gunicorn config.wsgi:application \
-    --bind 0.0.0.0:${PORT:-8000} \
+    --bind "0.0.0.0:${PORT:-8000}" \
     --workers 2 \
     --threads 2 \
-    --timeout 120 \
-    --access-logfile - \
-    --error-logfile - \
+    --timeout 60 \
     --log-level debug \
     --capture-output \
     --enable-stdio-inheritance

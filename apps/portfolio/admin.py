@@ -1,6 +1,6 @@
+import logging
 from django.contrib import admin
 from django.utils.html import format_html
-from django_summernote.admin import SummernoteModelAdmin
 from .models import Technology, Portfolio, PortfolioImage
 
 class PortfolioImageInline(admin.TabularInline):
@@ -23,8 +23,7 @@ class TechnologyAdmin(admin.ModelAdmin):
     ordering = ["name", "-created_at"]
 
 @admin.register(Portfolio)
-class PortfolioAdmin(SummernoteModelAdmin):
-    summernote_fields = ("description",)
+class PortfolioAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "image_preview",
@@ -47,7 +46,15 @@ class PortfolioAdmin(SummernoteModelAdmin):
         ("Content", {"fields": ("description", "featured_image", "featured_image_url", "technologies")}),
         (
             "Project Details",
-            {"fields": ("external_url_type", "external_url", "is_featured", "order")},
+            {
+                "fields": (
+                    "external_url_type",
+                    "external_url",
+                    "live_site_url",
+                    "is_featured",
+                    "order"
+                )
+            },
         ),
         (
             "SEO",
@@ -64,4 +71,12 @@ class PortfolioAdmin(SummernoteModelAdmin):
         return "No image"
 
     image_preview.short_description = "Preview"
-    
+
+    def save_model(self, request, obj, form, change):
+        try:
+            super().save_model(request, obj, form, change)
+        except Exception as e:
+            logger = logging.getLogger('apps.portfolio')
+            logger.error(f"Error saving portfolio {obj.title}: {str(e)}")
+            raise
+        
