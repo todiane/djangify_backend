@@ -35,6 +35,7 @@ class PortfolioSerializer(TimeStampedModelSerializer, SEOModelSerializer):
             "technologies",
             "external_url_type",
             "external_url",
+            "live_site_url",
             "is_featured",
             "order",
             "images",
