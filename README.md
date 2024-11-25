@@ -126,3 +126,8 @@ djangify_backend/
 
 The project demonstrates professional Django development practices with a focus on maintainability, security, and scalability. The codebase is structured to accommodate future growth while maintaining performance and reliability.
 
+Diane Corriette
+https://todiane.dev
+
+Djangify On GitHub
+https://github.com/djangify 
