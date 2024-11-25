@@ -32,12 +32,6 @@ class Technology(models.Model):
         return self.name
 
 class Portfolio(models.Model):
-    EXTERNAL_URL_TYPES = (
-        ('github', 'GitHub Repository'),
-        ('marketplace', 'Marketplace Listing'),
-        ('live', 'Visit Live Site'),
-    )
-
     STATUS_CHOICES = [
         ('draft', 'Draft'),
         ('published', 'Published'),
@@ -64,17 +58,20 @@ class Portfolio(models.Model):
     )
     featured_image_url = models.URLField(blank=True, null=True)
     technologies = models.ManyToManyField(Technology, related_name="portfolios")
-    external_url_type = models.CharField(
-        max_length=20,
-        choices=EXTERNAL_URL_TYPES,
+    github_url = models.URLField(
         blank=True,
-        null=True
+        null=True,
+        help_text="URL to the GitHub repository for this project",
     )
-    external_url = models.URLField(blank=True)
+    external_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text="URL to the external marketplace listing (e.g., Flippa)",
+    )
     live_site_url = models.URLField(
         blank=True,
         null=True,
-        help_text="URL to the live deployed project"
+        help_text="URL to the live deployed project",
     )
     is_featured = models.BooleanField(default=False)
     order = models.IntegerField(default=0)

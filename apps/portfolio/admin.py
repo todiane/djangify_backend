@@ -43,12 +43,11 @@ class PortfolioAdmin(admin.ModelAdmin):
         "title",
         "image_preview",
         "status",
-        "external_url_type",
         "is_featured",
         "order",
         "created_at",
     )
-    list_filter = ("status", "is_featured", "external_url_type", "technologies", "created_at")
+    list_filter = ("status", "is_featured", "technologies", "created_at")
     search_fields = ("title", "description", "short_description")
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("technologies",)
@@ -59,7 +58,7 @@ class PortfolioAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Basic Information", {
             "fields": ("title", "slug", "short_description", "status"),
-            "classes": ("wide", "extrapretty"),  # Add these classes
+            "classes": ("wide", "extrapretty"),  
         }),
         ("Content", {
             "fields": ("description", "featured_image", "featured_image_url", "technologies"),
@@ -67,11 +66,11 @@ class PortfolioAdmin(admin.ModelAdmin):
         }),
         ("Project Details", {
             "fields": (
-                "external_url_type",
-                "external_url",
-                "live_site_url",
+                "github_url",  # New field
+                "external_url",  # Retained for marketplace links
+                "live_site_url",  # Existing field
                 "is_featured",
-                "order"
+                "order",
             ),
             "classes": ("wide", "extrapretty"),
         }),
