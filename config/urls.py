@@ -41,6 +41,7 @@ urlpatterns = [
         name="django.contrib.sitemaps.views.sitemap",
     ),
     path("", TemplateView.as_view(template_name="index.html"), name="home"),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
 ]
 
 handler404 = "apps.core.views.custom_404"

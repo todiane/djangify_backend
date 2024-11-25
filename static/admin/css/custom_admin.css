@@ -1,0 +1,48 @@
+/* static/admin/css/custom_admin.css */
+
+/* Add spacing between form rows */
+.form-row {
+  padding: 15px 0;
+  margin-bottom: 10px;
+}
+
+/* Better spacing for fieldsets */
+.module {
+  margin-bottom: 20px;
+}
+
+/* Improve technologies selection layout */
+.selector {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+}
+
+.selector select {
+  width: 380px !important;
+  height: 200px !important;
+}
+
+.selector-available,
+.selector-chosen {
+  width: 48% !important;
+  float: none !important;
+}
+
+/* Better spacing for input fields */
+.form-row input[type=text],
+.form-row input[type=url],
+.form-row textarea {
+  margin: 3px 0;
+}
+
+/* Add spacing between fields */
+.field-box {
+  margin-bottom: 10px;
+}
+
+/* Better label spacing */
+.form-row label {
+  margin-bottom: 5px;
+  display: block;
+}

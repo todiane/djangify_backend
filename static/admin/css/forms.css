@@ -1,0 +1,10 @@
+/* static/admin/css/forms.css */
+
+.full-width .field-description {
+  width: 100%;
+}
+
+.cke_chrome {
+  width: 100% !important;
+  overflow: hidden;
+}
