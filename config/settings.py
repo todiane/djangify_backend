@@ -19,17 +19,17 @@ LOGS_DIR.mkdir(exist_ok=True)
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Database configuration - comment out local database and set debug to false in production. For local use comment out production database and set debug to true.
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-DATABASES = {"default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+# DATABASES = {"default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))}
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') or [
     'djangifybackend.up.railway.app',
@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     # Local apps
     "apps.core.apps.CoreConfig",
     "apps.portfolio.apps.PortfolioConfig",
+    "apps.contact.apps.ContactConfig",
 ]
 
 MIDDLEWARE = [
