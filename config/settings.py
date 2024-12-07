@@ -34,6 +34,8 @@ DATABASES = {"default": dj_database_url.config(default=os.environ.get("DATABASE_
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') or [
     'djangifybackend.up.railway.app',
     'djangify.up.railway.app',
+    'djangify.com',
+    'www.djangify.com',
     '.up.railway.app',
     'djangifybackend-production.up.railway.app',
     'djangify-production.up.railway.app',
@@ -148,6 +150,8 @@ else:
     CORS_ALLOWED_ORIGINS = [
         "https://djangify.up.railway.app",
         "https://djangifybackend.up.railway.app",
+        "https://djangify.com",
+        "https://www.djangify.com",
     ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -197,6 +201,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CSRF_TRUSTED_ORIGINS = [
     "https://djangify.up.railway.app",
     "https://djangifybackend.up.railway.app",
+    "https://djangify.com",
+    "https://www.djangify.com",
 ]
 
 if DEBUG:
