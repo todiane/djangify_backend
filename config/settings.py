@@ -64,8 +64,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "apps.core.middleware.ErrorHandlingMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "apps.core.middleware.ErrorHandlingMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -151,18 +151,26 @@ else:
     ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-# CSRF settings
-CSRF_TRUSTED_ORIGINS = [
-    "https://djangify.up.railway.app",
-    "https://djangifybackend.up.railway.app",
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
-if DEBUG:
-    CSRF_TRUSTED_ORIGINS.extend([
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-    ])
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 
 # REST Framework settings
@@ -185,7 +193,18 @@ PORTFOLIO_IMAGE_QUALITY = 85
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# In settings.py, add after the existing configurations
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    "https://djangify.up.railway.app",
+    "https://djangifybackend.up.railway.app",
+]
+
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS.extend([
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+    ])
+
 
 # Logging Configuration
 LOGGING = {
@@ -256,6 +275,11 @@ LOGGING = {
         },
         'apps.portfolio': {
             'handlers': ['portfolio_file', 'error_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'apps.contact': {
+            'handlers': ['console', 'error_file'],
             'level': 'INFO',
             'propagate': True,
         },

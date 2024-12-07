@@ -33,8 +33,8 @@ urlpatterns = [
     path("api/health/", health_check, name="health_check"),
     path("api/", include("apps.core.urls")),
     path("api/v1/", api_root, name="api-root"),
-    path("api/v1/portfolio/", include("apps.portfolio.urls")),
     path('api/v1/contact/', include('apps.contact.urls')),
+    path("api/v1/portfolio/", include("apps.portfolio.urls")),
     path(
         "sitemap.xml",
         sitemap,
